@@ -1,9 +1,3 @@
-import random
-
-class yaku:
-    def __init__(self):
-        self.menzen_req = True
-
 class Tile:
     name = "Generic Tile"
     term = False
@@ -260,15 +254,15 @@ class Wall:
         self.set_dora()
 
 
-    def build_wall(self): 
-        self.all_tiles = [Man_1(), Man_2(), Man_3(), Man_4(), Man_5(), Man_6(), Man_7(), Man_8(), Man_9(), 
+    def build_wall(self):
+        self.all_tiles = [Man_1(), Man_2(), Man_3(), Man_4(), Man_5(), Man_6(), Man_7(), Man_8(), Man_9(),
                             Pin_1(),Pin_2(),Pin_3(),Pin_4(), Pin_5(), Pin_6(), Pin_7(), Pin_8(), Pin_9(),
                             Sou_1(), Sou_2(), Sou_3(), Sou_4(), Sou_5(), Sou_6(), Sou_7(), Sou_8(), Sou_9(),
                             Green_Dragon(), Red_Dragon(), White_Dragon(),
                             East_Wind(), South_Wind(), West_Wind(), North_Wind()
                             ]*4
         random.shuffle(self.all_tiles)
-    
+   
     def break_wall(self):
         roll = random.randint(0,135)
         self.deadwall_start = roll-14
@@ -277,17 +271,17 @@ class Wall:
             self.deadwall = self.all_tiles[self.deadwall_start:]+ self.all_tiles[:self.deadwall_end]
         else:
             self.deadwall = self.all_tiles[self.deadwall_start:self.deadwall_end]
-    
+   
     def check_dora(self):
         dora_inidcator = self.deadwall[-6]
         if dora_inidcator.honor == False:
             number = int(dora_inidcator.name[-1])
             if number == 9:
                 number = 1
-            else: 
+            else:
                 number = number + 1
             self.dora_name = dora_inidcator.name[:-1]+str(number)
-        
+       
         elif dora_inidcator.suit == "Dragon":
             if dora_inidcator.name == "White Dragon":
                 self.dora_name = "Green Dragon"
@@ -295,17 +289,17 @@ class Wall:
                 self.dora_name = "Red Dragon"
             elif dora_inidcator.name == "Red Dragon":
                 self.dora_name = "White Dragon"
-        
+       
         elif dora_inidcator.suit == "Wind":
             self.dora_name = progress_wind(dora_inidcator.name)
-        
+       
 
-    
+   
     def set_dora(self):
         self.dora_tiles = [tile for tile in self.all_tiles if tile.name == self.dora_name]
         for tile in self.dora_tiles:
             tile.update_dora()
-            
+           
 
     def update_prevalent_wind(self):
         self.p_wind = "South Wind"
@@ -325,7 +319,7 @@ def check_furiten(func):
             return None
         else:
             func(player)
-            return 
+            return
     return furiten
 
 
@@ -349,8 +343,8 @@ class Player:
         self.current_draw = ''
         self.sort_step = 0
         self.i = 0
-        
-    
+       
+   
     def wipe_hand(self):
         self.hand = []
 
@@ -362,14 +356,14 @@ class Player:
         self.current_draw = next_tile.name
         self.hand = self.hand + [next_tile]
     def test(self, wall):
-        self.hand = [Red_Dragon(), Man_2(), East_Wind(), Red_Dragon(), Pin_8(), West_Wind(), Green_Dragon(), Man_8(), 
+        self.hand = [Red_Dragon(), Man_2(), East_Wind(), Red_Dragon(), Pin_8(), West_Wind(), Green_Dragon(), Man_8(),
         Pin_6(), Man_1(), Sou_8(), Pin_4(), Pin_6()]
         pass
 
     def sort_info(self):
-        sort_dict = [{'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, 
-        {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, 
-        {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, 
+        sort_dict = [{'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0},
+        {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0},
+        {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0},
         {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}, {'Name': '', 'Value': 0}]
         for i in range(len(self.hand)):
 
@@ -389,19 +383,19 @@ class Player:
                     sort_dict[i]['Value'] = 28
                 elif self.hand[i].name[0] == 'W' and self.hand[i].name[1] == 'h':
                     sort_dict[i]['Name'] = self.hand[i].name
-                    sort_dict[i]['Value'] = 29 
+                    sort_dict[i]['Value'] = 29
                 elif self.hand[i].name[0] == 'G':
                     sort_dict[i]['Name'] = self.hand[i].name
-                    sort_dict[i]['Value'] = 30 
+                    sort_dict[i]['Value'] = 30
                 elif self.hand[i].name[0] == 'N':
                     sort_dict[i]['Name'] = self.hand[i].name
-                    sort_dict[i]['Value'] = 31 
+                    sort_dict[i]['Value'] = 31
                 elif self.hand[i].name[0] == 'E':
                     sort_dict[i]['Name'] = self.hand[i].name
                     sort_dict[i]['Value'] = 32
                 elif self.hand[i].name[0] == 'S' and self.hand[i].name[3] == 't':
                     sort_dict[i]['Name'] = self.hand[i].name
-                    sort_dict[i]['Value'] = 33 
+                    sort_dict[i]['Value'] = 33
                 elif self.hand[i].name[0] == 'W' and self.hand[i].name[1] == 'e':
                     sort_dict[i]['Name'] = self.hand[i].name
                     sort_dict[i]['Value'] = 34
@@ -409,8 +403,8 @@ class Player:
 
     def sort_method(self, x):
         return x["Value"]
-      
-            
+     
+           
     def sort_hand(self):
         sort_dict = self.sort_info()
         sort_dict.sort(key=self.sort_method)
@@ -436,7 +430,7 @@ class Game:
         for i in range(4):
             self.players[i].wipe_hand()
         self.play()
-    
+   
 
     def check_exhaustive_draw(self):
         if self.next_index(self.last_index) == self.wall.deadwall_start:
@@ -457,10 +451,10 @@ class Game:
         self.pc.discards = self.pc.discards + [self.pc.hand[user_input]]
         self.current_discard=self.pc.hand[user_input]
         self.pc.hand.pop(user_input)
-        
+       
         return
 
-    
+   
 
     def initial_deal(self):
         self.last_index= self.wall.deadwall_end
@@ -477,7 +471,7 @@ class Game:
                     self.players[num].hand = self.players[num].hand+self.wall.all_tiles[self.last_index+1:self.last_index+5]
                     self.last_index=self.last_index+4
                 num=self.next_num(num)
-                
+               
         num = self.east_num
         for i in range(4):
                 self.players[num].hand = self.players[num].hand+[self.wall.all_tiles[self.next_index(self.last_index)]]
@@ -493,7 +487,7 @@ class Game:
         self.pc.seat_wind=wind_list[3]
 
     def drawing_phase(self, current_player):
-        
+       
         self.players[current_player].draw_tile(self.wall.all_tiles[self.next_index(self.last_index)])
         self.players[current_player].sort_hand()
 
@@ -522,12 +516,12 @@ class Game:
             if self.check_exhaustive_draw():
                 self.progress_seat_winds()
                 self.rebuild_wall()
-    
+   
     ###### Game State Printing ######
     def print_hands(self):
         for i in range(4):
             print(f"Player {i}'s hand: {self.players[i].hand} {len(self.players[i].hand)}'\n")
-    
+   
     def print_player_hand(self):
         print(f"Current Tile:   {self.players[3].current_draw}\tSeat Wind:   {self.players[3].seat_wind}\t\tDora:   {self.wall.dora_name}")
         suit = self.players[3].hand[0].suit
@@ -543,18 +537,18 @@ class Game:
                 string = string + "\n/|\   "
             string = string+f'''{i}: {self.players[3].hand[i]}  '''
             suit = self.players[3].hand[i].suit
-        string = string + "/|\ "   
+        string = string + "/|\ "  
         print(string)
         return
-            
-    
+           
+   
     def print_seat_winds(self):
         print(f"The prevalent wind is {self.p_wind}. The first dealer was Player {self.first_dealer}")
         for i in range(4):
             print(f"Player {i}'s seat wind: {self.players[i].seat_wind}'\n")
-    
+   
     class AI:
-        
+       
 
         def discard_random_tile(self, player):
             random_pick = random.randint(0, 13)
@@ -565,7 +559,7 @@ class Game:
 
 
     class Referee:
-        
+       
 
         def run_checks(self, players, current_discard):
             ron = self.check_ron(players,current_discard)
@@ -589,7 +583,7 @@ class Game:
 
 
 
-        
+       
 
         def check_pon_kan(self, players, current_discard):
             for i in range(4):
@@ -604,44 +598,100 @@ class Game:
                             players[i].closed_hand = False
                             players[i].hand=players[i].hand + [current_discard]
                             return players, i #TODO add headbump
-                        else: 
+                        else:
                             return None, None
                     else:
                         if random.randint(0,1)==1:
                             players[i].closed_hand = False
                             players[i].hand=players[i].hand + [current_discard]
-                            
+                           
                             return players, i #TODO add headbump
                         else:
                             return None, None
-                            
+                           
 
                 elif len(pc_list) == 3: #check Kan
                     #print(players[i].hand, pc_list, len(pc_list))
                     #pc_decision = input("Do you want to call kan? y/n")
                     return None, None
-    
-        
-            
+   
+       
+           
+#AHHHHHHHHHHH IERWOGBOIBGEROIGERQ VEOIGRNVPOQUYBPOQ Y #$(Y&#Q(OY#QHT$NOIG GQ#$IOGHN#I #NF GAOEI$ HAG$OIG#O$IGB)) I HATE BREATHING
+       
+       
 
-        
-        def check_chi(self, player, current_discard):
-            pass
-        
-        
+        def check_chi(self, players, current_discard):
+
+           
+            new_list = []
+
+            if current_discard.name[4].isdigit():
+                for i in range(4):
+
+                   
+                    # clears list so there's no overlap between checking hands for chi chances (Yeah I know it's only for the pplayer to the right of the discard,
+                    # but im a fucking idiot and can't figure out how to pull the person who discarded into this function. lmfao)
+                    #TODO: fix it lmao
+
+                    this_tile = []
+
+                    print("Just discarded: ", current_discard)
+                    print(new_list)
+
+                    for tile in players[3].hand:
+       
+                        if tile.name[0] == current_discard.name[0] and tile.name[4].isdigit():
+
+                            if (int(tile.name[4]) == (int(current_discard.name[4]) + 1)):
+                               
+                                this_tile = [tile.name]
+                                new_list = new_list + this_tile
+                                print(new_list)
+
+                            elif (int(tile.name[4]) == (int(current_discard.name[4]) - 1)):
+                               
+                                this_tile = [tile.name]
+                                new_list = new_list + this_tile
+                                print(new_list)
+
+                            else:
+
+                                return None, None
+                           
+                        #normally set to    2                    and                    1
+
+                        if len(new_list) >= 2 and len(set(Counter(new_list).keys())) >= 2:
+                           
+                            pc_decision_chi = input("Do you want to call chi? y/n   ")
+
+                            if pc_decision_chi == "y":
+                                players[3].closed_hand = False
+                                players[3].hand=players[3].hand + [current_discard]
+                                return players, i #TODO add headbump
+                            else:
+                                return None, None
+                           
+                    pass
+                pass
+           
+
+           
+       
+       
         def check_locked_hand(self, hand):
             if len([tile for tile in hand if tile.locked] == 13):
                 return True
-            else: 
+            else:
                 return False
-        
-        
-        
+       
+       
+       
         @check_tenpai
         def check_riichi(self, player):
             pc_decision = input("Do you want to call riichi? y/n")
             pass
-        
+       
         @check_furiten
         @check_tenpai
         def check_ron(self, current_discard):
@@ -669,13 +719,12 @@ class Game:
             self.print_seat_winds()
         self.east_num = self.players.index([player for player in self.players if player.seat_wind == "East Wind"][0])
 
-        
+       
 
-    
-    
+   
+   
 
 if __name__ == "__main__":
-    g = Game()
-    g.play()
+   g = Game()
+   g.play()
 
-    
