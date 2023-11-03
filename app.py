@@ -26,7 +26,7 @@ class Game:
    
 
     def check_exhaustive_draw(self):
-        if self.next_index(self.last_index) == self.wall.deadwall_start:
+        if self.next_index() == self.wall.deadwall_start:
             print(f"You've hit exhaustive draw. I hope you're in tenpai, nerd.")
             return True
         else:
@@ -64,7 +64,6 @@ class Game:
                     self.players[num].hand = self.players[num].hand+self.wall.all_tiles[self.last_index+1:self.last_index+5]
                     self.last_index=self.last_index+4
                 num=self.next_num(num)
-        print(self.players[num].hand)
         num = self.east_num
         for i in range(4):
                 self.players[num].hand = self.players[num].hand+[self.wall.all_tiles[self.next_index()]]
@@ -83,26 +82,29 @@ class Game:
        
         self.players[current_player].draw_tile(self.wall.all_tiles[self.next_index()])
         self.players[current_player].sort_hand()
+        self.last_index=self.next_index()
 
     def play(self):
         self.initial_deal()
         current_player = self.east_num
-        print("***** NEW HAND *****")
         self.print_hands()
         while True:
             self.drawing_phase(current_player)            
             if not current_player == 3: #AI turn
                 self.current_discard = self.players[current_player].discard_random_tile()
+                print(self.players[current_player].hand, len(self.players[current_player].hand))
             else: # Player Character Turn
                 self.choose_tile()
             self.players[current_player].sort_hand()
             self.last_index=self.next_index()
             #TODO Riichi #
             self.referee.check_riichi(self.players[current_player])
-            p, n = self.referee.run_checks(self.players, self.current_discard)
-            if not p is None:
+            x = self.referee.run_checks(self.players, self.current_discard, False)  
+            print(x)            
+            if not x is None:
+                p, n = x
                 self.players[n] = p
-                self.current_discard = self.players[current_player].discard_random_tile()
+                self.current_discard = self.players[n].discard_random_tile()
                 current_player = self.next_num(n)
             else:
                 current_player = self.next_num(current_player)
@@ -144,10 +146,8 @@ class Game:
     ### Helper Functions ###
     def next_index(self):
         if self.last_index + 1 > 135:
-            self.last_index = 0
             return 0
         else:
-            self.last_index = self.last_index + 1
             return self.last_index + 1
 
     def next_num(self, number):
