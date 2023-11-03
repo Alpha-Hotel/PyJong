@@ -4,7 +4,9 @@ from tile import *
 from players import *
 class Referee:
 
-    
+    chi_called = False
+    pon_called = False
+
     def check_tenpai(func):
 
         def tenpai(*args):
@@ -46,6 +48,7 @@ class Referee:
 
     
     def run_checks(self, players, current_discard, test:bool):
+
         ron = self.check_ron(players,current_discard)
 
         pk = None
@@ -88,6 +91,7 @@ class Referee:
                 if pc_decision == "y":
                     players[i].closed_hand = False
                     players[i].hand = players[i].hand + [current_discard]
+                    pon_called = True
                     return players, i  #TODO add headbump
 
                 else:
@@ -139,9 +143,12 @@ class Referee:
 
                                 print("AI player didn't call chi on: ", current_discard, ". What a rookie.")
                                 return None, None
-
+#YOU ARE HERE ---------------------------------------------------------------------------------------------------------------------------------------------------
+#       
+    
                                
     def player_chi_choice(self, player, new_list, current_discard):
+
         '''Function for checking if the player wants to call chi on one of all possible combinations.'''
         two_to_left = [tile for tile in new_list if int(tile.name[-1]) == int(current_discard.name[-1])-2]
         one_to_left = [tile for tile in new_list if int(tile.name[-1]) == int(current_discard.name[-1])-1]
@@ -156,8 +163,16 @@ class Referee:
             chi_choices.append([ current_discard, one_to_right[0], two_to_right[0]])
         pc_decision_chi = input(self.str_chi_options(chi_choices))
         if not pc_decision_chi == "n":
+            pc_decision_chi = int(pc_decision_chi)
             player.closed_hand = False
             player.hand=player.hand + [current_discard]
+            for i in range(3):
+                tiles = [tile for tile in player.hand if chi_choices[pc_decision_chi][i] is tile]
+                tile_index = player.hand.index(tiles[0])
+                print(tiles)
+                player.hand[tile_index].lock()
+
+            #for i in range(len(player.hand)): print(player.hand[i], "is", player.hand[i].locked)
             #TODO add lock here
         return player 
 
