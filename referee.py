@@ -86,7 +86,12 @@ class Referee:
                         players[i].closed_hand = False
                         players[i].hand = players[i].hand + [current_discard]
                         return players[i], i  #TODO add headbump
-
+                        pon_tiles = 0
+                        while pon_tiles < 3:
+                            tiles = [tile for tile in player.hand if tile is current_discard]
+                            tile_index = player.hand.index(tiles[0])
+                            player.hand[tile_index].lock()
+                            pon_tiles += 1
                     else:
 
                         return None
