@@ -86,12 +86,7 @@ class Referee:
                         players[i].closed_hand = False
                         players[i].hand = players[i].hand + [current_discard]
                         return players[i], i  #TODO add headbump
-                        pon_tiles = 0
-                        while pon_tiles < 3:
-                            tiles = [tile for tile in player.hand if tile is current_discard]
-                            tile_index = player.hand.index(tiles[0])
-                            player.hand[tile_index].lock()
-                            pon_tiles += 1
+
                     else:
 
                         return None
@@ -117,14 +112,15 @@ class Referee:
                     for node in new_list:
                         new_list = new_list + [tile for tile in players[i].hand if node.name in tile.edge and not tile.name == current_discard.name ]
                         #tiles adjacent to tiles adjacent to current discard
-
-                    if len(new_list) >= 2 and len(set(Counter(new_list).keys())) >= 2:
+                    list_names = set([li.name for li in new_list])
+                    print(list_names)
+                    if len(new_list) >= 2 and len(list_names) >= 2:
+                        print('accepted new list :', new_list)
                         if i == 3 or test: #player decisions
                             player = self.player_chi_choice(players[i], new_list, current_discard)
                             if not player == None:
                                 return player, i #TODO add headbump
                             else:
-
                                 return None
                         
                         else:
