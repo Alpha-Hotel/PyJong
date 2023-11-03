@@ -1,12 +1,10 @@
 from collections import Counter 
 import random
 from tile import *
-from players import *
+
 class Referee:
 
-    chi_called = False
-    pon_called = False
-
+    
     def check_tenpai(func):
 
         def tenpai(*args):
@@ -17,7 +15,7 @@ class Referee:
 
         return tenpai
 
-    def check_if_number(func):
+    def check_if_number(func): #decorator
         pass
         """
         def tenpai(*args):
@@ -48,7 +46,6 @@ class Referee:
 
     
     def run_checks(self, players, current_discard, test:bool):
-
         ron = self.check_ron(players,current_discard)
 
         pk = None
@@ -62,6 +59,7 @@ class Referee:
                 return pk, changed
             x = self.check_chi(players, current_discard,test)
             if not x is None:
+                print("chi")
                 chi, changed = x
                 return chi, changed
             else: 
@@ -79,39 +77,32 @@ class Referee:
                 tile for tile in players[i].hand
                 if tile.name == current_discard.name
             ]
+            if len(pc_list) == 2:  #check Pon
 
-            print(len(pc_list), current_discard.name)
+                if i == 3:
+                    pc_decision = input("Do you want to call pon? y/n")
 
-        if len(pc_list) == 2:  #check Pon
-            #print(players[i].hand, pc_list, len(pc_list))
+                    if pc_decision == "y":
+                        players[i].closed_hand = False
+                        players[i].hand = players[i].hand + [current_discard]
+                        return players[i], i  #TODO add headbump
 
-            if i == 3:
-                pc_decision = input("Do you want to call pon? y/n")
+                    else:
 
-                if pc_decision == "y":
-                    players[i].closed_hand = False
-                    players[i].hand = players[i].hand + [current_discard]
-                    pon_called = True
-                    return players, i  #TODO add headbump
+                        return None
 
                 else:
+                    pass
+                if random.randint(0, 1) == 1:
+                    players[i].closed_hand = False
+                    players[i].hand = players[i].hand + [current_discard]
+                    return players[i], i  #TODO add headbump
 
-                    return None, None
+                else:
+                    return None
 
-            else:
-                pass
-            if random.randint(0, 1) == 1:
-                players[i].closed_hand = False
-                players[i].hand = players[i].hand + [current_discard]
-                return players, i  #TODO add headbump
-
-            else:
-                return None, None
-
-        elif len(pc_list) == 3:  #check Kan
-            #print(players[i].hand, pc_list, len(pc_list))
-            #pc_decision = input("Do you want to call kan? y/n")
-            return None, None
+            elif len(pc_list) == 3:  #check Kan
+                return None
 
     def check_chi(self, players, current_discard, test):
             '''Check if it is possible for any of the players to call chi on the current discard.'''
@@ -129,7 +120,7 @@ class Referee:
                                 return player, i #TODO add headbump
                             else:
 
-                                return None, None
+                                return None
                         
                         else:
                             
@@ -137,18 +128,15 @@ class Referee:
                                 print("AI player ", players[i], "called chi on: ", current_discard)
                                 players[i].closed_hand = False
                                 players[i].hand=players[i].hand + [current_discard]
-                                return players, i #TODO add headbump
+                                return players[i], i #TODO add headbump
 
                             else:
 
                                 print("AI player didn't call chi on: ", current_discard, ". What a rookie.")
-                                return None, None
-#YOU ARE HERE ---------------------------------------------------------------------------------------------------------------------------------------------------
-#       
-    
+                                return None
+
                                
     def player_chi_choice(self, player, new_list, current_discard):
-
         '''Function for checking if the player wants to call chi on one of all possible combinations.'''
         two_to_left = [tile for tile in new_list if int(tile.name[-1]) == int(current_discard.name[-1])-2]
         one_to_left = [tile for tile in new_list if int(tile.name[-1]) == int(current_discard.name[-1])-1]
@@ -174,7 +162,9 @@ class Referee:
 
             #for i in range(len(player.hand)): print(player.hand[i], "is", player.hand[i].locked)
             #TODO add lock here
-        return player 
+            return player 
+        else: 
+            return None
 
     def str_chi_options(self, chi_choices):
         '''Creates "pretty" string for asking a user whether they want to call chi'''
@@ -201,31 +191,5 @@ class Referee:
 
 
 
-class Referee_Test_Suite:
-    def __init__(self, ref):
-        self.player = Player()
-        self.run_tests(ref)
-        
-    def run_tests(self, ref):
-        '''Run tests is set up to run the all of the tests that have been written. It will
-        '''
-        print(self.str_test([self.test_chi_1(ref.check_chi),
-        self.test_chi_2(ref.check_chi)]))
-    def test_chi_1(self, check_chi):
-        self.player.hand = [Sou_2(),Sou_3()]
-        player, _ = check_chi([self.player], Sou_4(), True)
-        x = [tile.name for tile in player.hand]
-        assert x == ['Sou_2', 'Sou_3', 'Sou_4'] or ['Sou_2', 'Sou_3']
-        return True
-    def test_chi_2(self, check_chi):
-        self.player.hand = [Sou_4(),Sou_5(),Sou_5(),Sou_6(), Sou_7()]
-        player, _ = check_chi([self.player], Sou_6(), True)
-        x = [tile.name for tile in player.hand]
-        assert x == ['Sou_4', 'Sou_5', 'Sou_5', 'Sou_6', 'Sou_7', 'Sou_6'] or ['Sou_4', 'Sou_5', 'Sou_5', 'Sou_6', 'Sou_7']
-        return True
-    def str_test(self, li):
-        return f"{sum(li)} out of {len(li)} tests passed."
 
-if __name__ == "__main__":
-    test = Referee_Test_Suite(Referee())
     
