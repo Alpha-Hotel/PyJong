@@ -15,6 +15,9 @@ class Tile:
 
   dora = False
 
+  def lock(self):
+      self.locked = True
+
   def full_repr(self):
 
     return f"""*********\n{self.name}\nTerminal: {self.term}\nHonor: {self.honor}\nSuit: {self.suit}\nEdges: {self.edge}\nDora: {self.dora}\n*********"""
